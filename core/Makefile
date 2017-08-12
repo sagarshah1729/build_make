@@ -1435,15 +1435,6 @@ ifneq ($(INSTALLED_RECOVERYIMAGE_TARGET),)
 ifneq ($(BOARD_USES_FULL_RECOVERY_IMAGE),true)
 intermediates := $(call intermediates-dir-for,PACKAGING,recovery_patch)
 RECOVERY_FROM_BOOT_PATCH := $(intermediates)/recovery_from_boot.p
-ifeq ($(TARGET_DUMMY_RECOVERY_PATCH),true)
-$(RECOVERY_FROM_BOOT_PATCH): $(INSTALLED_RECOVERYIMAGE_TARGET) \
-                             $(INSTALLED_BOOTIMAGE_TARGET) \
-			     $(HOST_OUT_EXECUTABLES)/imgdiff \
-	                     $(HOST_OUT_EXECUTABLES)/bsdiff
-	@echo "Construct DUMMY recovery patch"
-	mkdir -p $(dir $@)
-	$(hide) touch $@
-else
 $(RECOVERY_FROM_BOOT_PATCH): $(INSTALLED_RECOVERYIMAGE_TARGET) \
                              $(INSTALLED_BOOTIMAGE_TARGET) \
 			     $(HOST_OUT_EXECUTABLES)/imgdiff \
@@ -1453,7 +1444,6 @@ $(RECOVERY_FROM_BOOT_PATCH): $(INSTALLED_RECOVERYIMAGE_TARGET) \
 	PATH=$(HOST_OUT_EXECUTABLES):$$PATH $(HOST_OUT_EXECUTABLES)/imgdiff $(INSTALLED_BOOTIMAGE_TARGET) $(INSTALLED_RECOVERYIMAGE_TARGET) $@
 else # $(BOARD_USES_FULL_RECOVERY_IMAGE) == true
 RECOVERY_FROM_BOOT_PATCH := $(INSTALLED_RECOVERYIMAGE_TARGET)
-endif
 endif
 endif
 
