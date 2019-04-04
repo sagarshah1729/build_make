@@ -340,7 +340,7 @@ endif
 	$(hide) TARGET_BUILD_TYPE="$(TARGET_BUILD_VARIANT)" \
 			TARGET_BUILD_FLAVOR="$(TARGET_BUILD_FLAVOR)" \
 			TARGET_DEVICE="$(TARGET_DEVICE)" \
-			GZOSP_DEVICE="$(TARGET_DEVICE)" \
+			COS_DEVICE="$(TARGET_DEVICE)" \
 			PRODUCT_NAME="$(TARGET_PRODUCT)" \
 			PRODUCT_BRAND="$(PRODUCT_BRAND)" \
 			PRODUCT_DEFAULT_LOCALE="$(call get-default-product-locale,$(PRODUCT_LOCALES))" \
@@ -3198,7 +3198,7 @@ endif
 ifeq ($(WITH_GMS),true)
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
 else
-ifneq ($(GZOSP_BUILD),)
+ifneq ($(COS_BUILD),)
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := true
 else
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
@@ -3218,25 +3218,29 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) \
 	   $(if $(OEM_OTA_CONFIG), -o $(OEM_OTA_CONFIG)) \
 	   $(BUILT_TARGET_FILES_PACKAGE) $@
 
-GZOSP_TARGET_PACKAGE := $(PRODUCT_OUT)/$(GZOSP_VERSION).zip
+COS_TARGET_PACKAGE := $(PRODUCT_OUT)/$(COS_MOD_VERSION).zip
 
-.PHONY: otapackage gzosp
+.PHONY: otapackage bacon
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
-gzosp: otapackage
-	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(GZOSP_TARGET_PACKAGE)
-	$(hide) $(MD5SUM) $(GZOSP_TARGET_PACKAGE) > $(GZOSP_TARGET_PACKAGE).md5sum
-	@echo -e ${CL_RED}""${CL_RED}
-	@echo -e ${CL_RED}"    ▄██████▄   ▄███████▄   ▄██████▄     ▄████████    ▄███████▄ "${CL_RED}
-	@echo -e ${CL_RED}"   ███    ███ ██▀     ▄██ ███    ███   ███    ███   ███    ███ "${CL_RED}
-	@echo -e ${CL_RED}"   ███    █▀        ▄███▀ ███    ███   ███    █▀    ███    ███ "${CL_RED}
-	@echo -e ${CL_RED}"  ▄███         ▀█▀▄███▀▄▄ ███    ███   ███          ███    ███ "${CL_RED}
-	@echo -e ${CL_RED}" ▀▀███ ████▄    ▄███▀   ▀ ███    ███ ▀███████████ ▀█████████▀ "${CL_RED}
-	@echo -e ${CL_RED}"   ███    ███ ▄███▀       ███    ███          ███   ███ "${CL_RED}
-	@echo -e ${CL_RED}"   ███    ███ ███▄     ▄█ ███    ███    ▄█    ███   ███ "${CL_RED}
-	@echo -e ${CL_RED}"   ████████▀   ▀████████▀  ▀██████▀   ▄████████▀   ▄████▀ "${CL_RED}
-	@echo -e ${CL_RED}"                           A Ground Zero Roms "${CL_RED}
-	@echo -e ${CL_RED}"                                Project      "${CL_RED}
-	@echo -e "Package complete: $(GZOSP_TARGET_PACKAGE)"
+bacon: otapackage
+	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(COS_TARGET_PACKAGE)
+	$(hide) $(MD5SUM) $(COS_TARGET_PACKAGE) > $(COS_TARGET_PACKAGE).md5sum
+
+	echo -e ${CL_CYN}" ▄████▄   ▒█████    ██████  ███▄ ▄███▓ ██▓ ▄████▄      ▒█████    ██████  "${CL_RST}
+	echo -e ${CL_CYN}"▒██▀ ▀█  ▒██▒  ██▒▒██    ▒ ▓██▒▀█▀ ██▒▓██▒▒██▀ ▀█     ▒██▒  ██▒▒██    ▒  "${CL_RST}
+	echo -e ${CL_CYN}"▒▓█    ▄ ▒██░  ██▒░ ▓██▄   ▓██    ▓██░▒██▒▒▓█    ▄    ▒██░  ██▒░ ▓██▄    "${CL_RST}
+	echo -e ${CL_CYN}"▒▓▓▄ ▄██▒▒██   ██░  ▒   ██▒▒██    ▒██ ░██░▒▓▓▄ ▄██▒   ▒██   ██░  ▒   ██▒ "${CL_RST}
+	echo -e ${CL_CYN}"▒ ▓███▀ ░░ ████▓▒░▒██████▒▒▒██▒   ░██▒░██░▒ ▓███▀ ░   ░ ████▓▒░▒██████▒▒ "${CL_RST}
+	echo -e ${CL_CYN}"░ ░▒ ▒  ░░ ▒░▒░▒░ ▒ ▒▓▒ ▒ ░░ ▒░   ░  ░░▓  ░ ░▒ ▒  ░   ░ ▒░▒░▒░ ▒ ▒▓▒ ▒ ░ "${CL_RST}
+	echo -e ${CL_CYN}"  ░  ▒     ░ ▒ ▒░ ░ ░▒  ░ ░░  ░      ░ ▒ ░  ░  ▒        ░ ▒ ▒░ ░ ░▒  ░ ░ "${CL_RST}
+	echo -e ${CL_CYN}"░        ░ ░ ░ ▒  ░  ░  ░  ░      ░    ▒ ░░           ░ ░ ░ ▒  ░  ░  ░   "${CL_RST}
+	echo -e ${CL_CYN}"░ ░          ░ ░        ░         ░    ░  ░ ░             ░ ░        ░   "${CL_RST}
+	echo -e ${CL_CYN}"░                                         ░                              "${CL_RST}
+	@echo -e ${CL_BLD}${CL_CYN}"===============================-Package complete-==============================="${CL_RST}
+	@echo -e ${CL_BLD}${CL_YLW}"Zip: "${CL_YLW} $(COS_TARGET_PACKAGE)${CL_RST}
+	@echo -e ${CL_BLD}${CL_YLW}"MD5: "${CL_YLW}" `cat $(COS_TARGET_PACKAGE).md5sum | awk '{print $$1}' `"${CL_RST}
+	@echo -e ${CL_BLD}${CL_YLW}"Size:"${CL_YLW}" `du -sh $(COS_TARGET_PACKAGE) | awk '{print $$1}' `"${CL_RST}
+	@echo -e ${CL_BLD}${CL_CYN}"================================================================================"${CL_RST}
 
 endif    # build_ota_package
 
